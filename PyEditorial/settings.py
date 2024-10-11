@@ -80,24 +80,18 @@ WSGI_APPLICATION = 'PyEditorial.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'PyEditorial',  # Veritabanı adınızı buraya yazın
+        'USER': 'postgres',      # PostgreSQL kullanıcı adınız
+        'PASSWORD': 'great123',  # PostgreSQL şifreniz
+        'HOST': 'pyeditorial-db-1',  # Konteyner adınız
+        'PORT': '5432',          # PostgreSQL varsayılan portu
     }
 }
-
-# If you need to use Postgresql, you can use this section
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'PyEditorial',
-#         'USER': 'postgres',
-#         'PASSWORD': 'great123',
-#         'HOST': 'localhost',
-#         'PORT': '',
-#     }
-# }
 
 
 # Password validation
@@ -233,3 +227,4 @@ CONSTANCE_CONFIG_FIELDSETS = {
 LOGIN_REDIRECT_URL = 'content:index'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'content:index'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

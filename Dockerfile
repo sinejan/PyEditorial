@@ -1,13 +1,25 @@
-FROM python:3.9
+FROM python:3.8-slim
 
 WORKDIR /app
+
+# Gereksinim dosyalarını kopyala
+COPY requirements.txt ./
+
+
+
+
+# Bağımlılıkları yükle
+RUN pip install --upgrade pip setuptools && \
+    pip install --no-cache-dir -r requirements.txt
+
+# entrypoint.sh dosyasını kopyala
+COPY entrypoint.sh ./
+
+# Uygulama dosyalarını kopyala
 COPY . .
 
-# install requirements
-RUN pip install -r requirements.txt
+RUN chmod +x entrypoint.sh
 
-# migrations
-RUN python manage.py makemigrations content
-RUN python manage.py migrate
-# static
-RUN python manage.py collectstatic --noinput
+ENTRYPOINT ["/app/entrypoint.sh"]
+
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "PyEditorial.wsgi:application"]

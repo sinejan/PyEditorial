@@ -1,12 +1,41 @@
-version: "3.6"
 
 services:
- web:
+  db:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env.db
+
+  web:
     build:
-     context: .
-     dockerfile: Dockerfile
-    command: ./manage.py runserver 0.0.0.0:8000
+      context: .
+      dockerfile: Dockerfile
+    command: gunicorn PyEditorial.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - ./:/code
+      - static_volume:/code/static
+      - media_volume:/code/media
+    env_file:
+      - ./.env.web
     ports:
-      - "80:8000"
+      - "8000:8000"
+    depends_on:
+      - db   
+
+  nginx:
+    build: ./nginx
+    volumes:
+      - ./:/code
+      - static_volume:/code/static
+      - media_volume:/code/media
+    ports:
+      - "8080:443"
+      - "3000:80"
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
